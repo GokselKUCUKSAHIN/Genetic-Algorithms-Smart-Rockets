@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -22,19 +23,40 @@ public class Main extends Application
     public static final int HEIGHT = 800;
     private static Color backcolor = Color.rgb(51, 51, 51);
 
-    private double xoff = Utils.getRandom(0, 100);
-    private double yoff = Utils.getRandom(0, 100);
-
     private static Timeline update;
+    public static int count = 0;
+    public static int lifeSpan = 400;
+    public static double targetX;
+    public static double targetY;
 
     @Override
     public void start(Stage stage) throws Exception
     {
         Pane root = new Pane();
         child = root.getChildren();
+
         //
-        Rocket rocket = new Rocket(WIDTH/2,HEIGHT-100);
-        child.add(rocket.getBody());
+        // TARGET
+        //
+        Target target = new Target(WIDTH / 2, 100);
+        targetX = target.getBody().getLayoutX();
+        targetY = target.getBody().getLayoutY();
+
+
+        Rectangle barrier = new Rectangle(250, HEIGHT / 2 + 50, 700, 20);
+        barrier.setFill(Color.SNOW);
+
+        child.addAll(target.getBody());//, barrier);
+
+        //
+        // POPULATION
+        //
+        Population population = new Population();
+
+        for (Rocket rocket : population.rockets)
+        {
+            child.add(rocket.getBody());
+        }
 
         root.setOnKeyPressed(e -> {
             switch (e.getCode())
@@ -61,13 +83,16 @@ public class Main extends Application
         });
         update = new Timeline(new KeyFrame(Duration.millis(16), e -> {
             //60 fps
-            double xForce = SimpleNoise.noise(xoff, 1, -0.3, 0.3, true);
-            double yForce = SimpleNoise.noise(yoff, 1, -0.3, 0.3, true);
-            rocket.applyForce(new Point2D(xForce, yForce));
-            rocket.update();
-            xoff += 0.1;
-            yoff += 0.1;
-            //System.out.println("LOOP");
+            population.run();
+            stage.setTitle(count + "");
+            count++;
+            if (count == lifeSpan)
+            {
+                count = 0;
+                population.evaluate();
+                population.selection();
+                //population.reset();
+            }
         }));
         update.setCycleCount(Timeline.INDEFINITE);
         update.setRate(1);
