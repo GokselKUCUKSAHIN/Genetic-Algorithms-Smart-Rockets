@@ -2,7 +2,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -12,6 +11,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
 
 public class Main extends Application
 {
@@ -28,7 +29,7 @@ public class Main extends Application
     public static int lifeSpan = 400;
     public static double targetX;
     public static double targetY;
-
+    ArrayList<Node> nani;
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -46,7 +47,7 @@ public class Main extends Application
         Rectangle barrier = new Rectangle(250, HEIGHT / 2 + 50, 700, 20);
         barrier.setFill(Color.SNOW);
 
-        child.addAll(target.getBody());//, barrier);
+        child.addAll(target.getBody(), barrier);
 
         //
         // POPULATION
@@ -100,7 +101,10 @@ public class Main extends Application
         //update.play(); //uncomment for play when start
         //
         stage.setTitle(title);
+
+
         stage.setResizable(false);
+
         stage.setScene(new Scene(root, WIDTH - 10, HEIGHT - 10, backcolor));
         stage.show();
         root.requestFocus();

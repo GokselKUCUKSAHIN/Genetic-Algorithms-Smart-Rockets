@@ -3,7 +3,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.util.ArrayList;
 
 public class Rocket
@@ -22,12 +21,12 @@ public class Rocket
     double fitness = -1;
     //public static ArrayList<Rocket> rockets = new ArrayList<>();
 
-    /*
+
     public static int rx = 250;
     public static int ry = 450;
     public static int rw = 700;
     public static int rh = 20;
-*/
+
 
     public Rocket(double x, double y)
     {
@@ -47,7 +46,7 @@ public class Rocket
     public void calcFitness()
     {
         double d = Utils.distance(pos.getX(), pos.getY(), Main.targetX, Main.targetY);
-        this.fitness = 1 / d + 0.00001;
+        this.fitness = reverseFitness(d);
         if (completed)
         {
             this.fitness *= 10;
@@ -57,6 +56,13 @@ public class Rocket
             this.fitness /= 10;
         }
     }
+
+    static double maxLimit = Main.HEIGHT* 5;
+    private double reverseFitness(double x)
+    {
+        return maxLimit - x;
+    }
+
 
     // MAY FORCE BE WITH YOU
     public void applyForce(Point2D force)
@@ -72,11 +78,11 @@ public class Rocket
             this.completed = true;
             //this.pos = new Point2D(Main.targetX, Main.targetY);
         }
-        /*
+
         if (pos.getX() > rx && pos.getX() < rx + rw && pos.getY() > ry && pos.getY() < ry + rh)
         {
             this.crashed = true;
-        }*/
+        }
 
         //
         if (!completed && !crashed)
